@@ -6,13 +6,14 @@ import os
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+# ---------------- ENV SETUP ---------------- #
 
-app = FastAPI()
+load_dotenv()
 
 OFFICIAL_EMAIL = os.getenv("OFFICIAL_EMAIL")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-print("GEMINI KEY LOADED:", bool(GEMINI_API_KEY))
+
+app = FastAPI()
 
 # ---------------- UTIL FUNCTIONS ---------------- #
 
@@ -51,21 +52,42 @@ def hcf_array(arr: List[int]):
     return hcf_val
 
 def ai_answer(question: str):
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
-    headers = {"Content-Type": "application/json"}
-    payload = {
-        "contents": [{
-            "parts": [{"text": question}]
-        }]
-    }
-    params = {"key": GEMINI_API_KEY}
+    if not GEMINI_API_KEY:
+        raise Exception("Gemini API key not loaded")
 
-    res = requests.post(url, headers=headers, json=payload, params=params, timeout=10)
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [
+                    {
+                        "text": f"Answer the following question in ONE WORD ONLY. No punctuation, no explanation.\nQuestion: {question}"
+                    }
+                ]
+            }
+        ]
+    }
+
+    params = {
+        "key": GEMINI_API_KEY
+    }
+
+    res = requests.post(url, headers=headers, json=payload, params=params, timeout=15)
+
     if res.status_code != 200:
-        raise Exception("AI API error")
+        raise Exception("Gemini API error")
 
     text = res.json()["candidates"][0]["content"]["parts"][0]["text"]
-    return text.strip().split()[0]  # single-word response
+
+    # 🔒 Hard enforcement: return only first word
+    return text.strip().split()[0]
+  # single-word response
 
 # ---------------- API ENDPOINTS ---------------- #
 
