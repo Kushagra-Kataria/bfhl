@@ -12,6 +12,7 @@ app = FastAPI()
 
 OFFICIAL_EMAIL = os.getenv("OFFICIAL_EMAIL")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+print("GEMINI KEY LOADED:", bool(GEMINI_API_KEY))
 
 # ---------------- UTIL FUNCTIONS ---------------- #
 
