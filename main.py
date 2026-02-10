@@ -6,7 +6,6 @@ import os
 import requests
 from dotenv import load_dotenv
 
-# ---------------- ENV SETUP ---------------- #
 
 load_dotenv()
 
@@ -14,8 +13,6 @@ OFFICIAL_EMAIL = os.getenv("OFFICIAL_EMAIL")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 app = FastAPI()
-
-# ---------------- UTIL FUNCTIONS ---------------- #
 
 def fibonacci(n: int):
     if n < 0:
@@ -85,11 +82,7 @@ def ai_answer(question: str):
 
     text = res.json()["candidates"][0]["content"]["parts"][0]["text"]
 
-    # 🔒 Hard enforcement: return only first word
     return text.strip().split()[0]
-  # single-word response
-
-# ---------------- API ENDPOINTS ---------------- #
 
 @app.get("/health")
 def health():
@@ -101,7 +94,6 @@ def health():
 @app.post("/bfhl")
 def bfhl(body: Dict[str, Union[int, List[int], str]]):
     try:
-        # Must contain exactly one key
         if len(body) != 1:
             raise ValueError
 
