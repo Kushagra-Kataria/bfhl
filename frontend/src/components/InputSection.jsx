@@ -3,13 +3,20 @@ import { useState } from 'react';
 const SAMPLE_DATA = `A->B
 A->C
 B->D
-B->E
-C->F
-G->H
-H->I
+C->E
+E->F
 X->Y
 Y->Z
-Z->X`;
+Z->X
+P->Q
+Q->R
+G->H
+G->H
+G->I
+hello
+1->2
+A->`;
+
 
 /**
  * InputSection Component
